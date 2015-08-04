@@ -2,39 +2,44 @@
 
 namespace CodeProject\Http\Controllers;
 
-use CodeProject\Repositories\ClientRepository;
-use CodeProject\Services\ClientService;
+use CodeProject\Repositories\ProjectRepository;
+use CodeProject\Services\ProjectService;
 use Illuminate\Http\Request;
 
-class ClientController extends Controller {
+class ProjectController extends Controller
+{
 
     /**
-     * @var ClientService
+     * @var ProjectService
      */
     private $service;
 
     /**
-     * @var ClientRepository
+     * @var ProjectRepository
      */
     private $repository;
-
+    
     /**
      * 
-     * @param ClientRepository $repository
-     * @param ClientService $service
+     * @param ProjectRepository $repository
+     * @param ProjectService $service
      */
-    public function __construct(ClientRepository $repository, ClientService $service) {
+    public function __construct(ProjectRepository $repository, ProjectService $service) {
+        
         $this->repository = $repository;
         $this->service = $service;
     }
-
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-    public function index() {
+    public function index()
+    {
+        $this->repository->with('user');
+        $this->repository->with('client');
         return $this->repository->all();
+        
     }
 
     /**
@@ -42,7 +47,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
@@ -52,8 +58,9 @@ class ClientController extends Controller {
      * @param  Request  $request
      * @return Response
      */
-    public function store(Request $request) {
-        return $this->service->create($request->all());
+    public function store(Request $request)
+    {
+        $this->service->create($request->all());
     }
 
     /**
@@ -63,6 +70,8 @@ class ClientController extends Controller {
      * @return Response
      */
     public function show($id) {
+        $this->repository->with('user');
+        $this->repository->with('client');
         return $this->repository->find($id);
     }
 
@@ -95,7 +104,5 @@ class ClientController extends Controller {
      */
     public function destroy($id) {
         $this->repository->delete($id);
-        //Client::find($id)->delete();
     }
-
 }

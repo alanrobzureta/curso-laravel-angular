@@ -1,5 +1,10 @@
 <?php
 
+use CodeProject\Entities\Client;
+use CodeProject\Entities\Project;
+use CodeProject\Entities\User;
+use Faker\Generator;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -11,7 +16,7 @@
 |
 */
 
-$factory->define(CodeProject\User::class, function (Faker\Generator $faker) {
+$factory->define(User::class, function (Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
@@ -21,7 +26,7 @@ $factory->define(CodeProject\User::class, function (Faker\Generator $faker) {
 });
 
 
-$factory->define(CodeProject\Client::class, function (Faker\Generator $faker) {
+$factory->define(Client::class, function (Generator $faker) {
     return [
         'name' => $faker->name,
         'responsible' => $faker->name,
@@ -29,5 +34,15 @@ $factory->define(CodeProject\Client::class, function (Faker\Generator $faker) {
         'phone' => $faker->phoneNumber,
         'address' => $faker->address,
         'obs' => $faker->sentence,
+    ];
+});
+
+$factory->define(Project::class, function (Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'description' => $faker->name,
+        'progress' => $faker->sentence,
+        'status' => $faker->word,
+        'due_date' => $faker->dateTime,
     ];
 });
