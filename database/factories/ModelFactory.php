@@ -38,7 +38,17 @@ $factory->define(Client::class, function (Generator $faker) {
 });
 
 $factory->define(Project::class, function (Generator $faker) {
+    $owner = User::all()->lists('id');
+    foreach ($owner as $value) {
+        $o[] = $value;
+    }
+    $client = Client::all()->lists('id');
+    foreach ($client as $value) {
+        $c[] = $value;
+    }
     return [
+        'owner_id' => $faker->randomElement($o),
+        'client_id' => $faker->randomElement($c),
         'name' => $faker->name,
         'description' => $faker->name,
         'progress' => $faker->sentence,
