@@ -49,10 +49,10 @@ $factory->define(Project::class, function (Generator $faker) {
     return [
         'owner_id' => $faker->randomElement($o),
         'client_id' => $faker->randomElement($c),
-        'name' => $faker->name,
-        'description' => $faker->name,
-        'progress' => $faker->sentence,
-        'status' => $faker->word,
-        'due_date' => $faker->dateTime,
+        'name' => $faker->word,
+        'description' => $faker->sentence,
+        'progress' => rand(1,100),
+        'status' => rand(1,3),
+        'due_date' => $faker->dateTime('now'),
     ];
 });
