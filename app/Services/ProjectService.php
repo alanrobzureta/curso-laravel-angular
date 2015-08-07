@@ -10,6 +10,7 @@ namespace CodeProject\Services;
 
 use CodeProject\Repositories\ProjectRepository;
 use CodeProject\Validators\ProjectValidator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 /**
@@ -55,13 +56,55 @@ class ProjectService {
     
     public function update($data = [],$id) {
         try {
-            $this->validator->with($data)->passesOrFail();
+            $this->validator->with($data)->setId($id)->passesOrFail();
             return $this->repository->update($data, $id);
         } catch (ValidatorException $e) {
-            return [
+            return response()->json([
                 'error'=>true,
                 'message'=>$e->getMessageBag()
-            ];
-        }        
+            ]);
+        } catch(ModelNotFoundException $e) {
+            return response()->json([
+                'error'=>true,  
+                'message1'=>$e->getMessage(),
+                'message2'=>'Projeto ID '.$id.' nao encontrado.'
+            ]);
+        }       
+    }
+    
+    public function show($id) {
+        try {            
+            $this->repository->with('user');
+            $this->repository->with('client');
+            return $this->repository->find($id);            
+        } catch (ValidatorException $e) {
+            return response()->json([
+                'error'=>true,
+                'message'=>$e->getMessageBag()
+            ]);
+        } catch(ModelNotFoundException $e) {
+            return response()->json([
+                'error'=>true,  
+                'message1'=>$e->getMessage(),
+                'message2'=>'Projeto ID '.$id.' nao encontrado.'
+            ]);
+        }          
+    }
+    
+    public function destroy($id) {
+        try {            
+            $this->repository->delete($id);             
+        } catch (ValidatorException $e) {
+            return response()->json([
+                'error'=>true,
+                'message'=>$e->getMessageBag()
+            ]);
+        } catch(ModelNotFoundException $e) {
+            return response()->json([
+                'error'=>true,  
+                'message1'=>$e->getMessage(),
+                'message2'=>'Projeto ID '.$id.' nao encontrado.'
+            ]);
+        }         
     }
 }

@@ -70,9 +70,7 @@ class ProjectController extends Controller
      * @return Response
      */
     public function show($id) {
-        $this->repository->with('user');
-        $this->repository->with('client');
-        return $this->repository->find($id);
+        return $this->service->show($id);
     }
 
     /**
@@ -103,6 +101,6 @@ class ProjectController extends Controller
      * @return Response
      */
     public function destroy($id) {
-        $this->repository->delete($id);
+        $this->service->destroy($id);
     }
 }
