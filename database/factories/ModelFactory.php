@@ -2,6 +2,9 @@
 
 use CodeProject\Entities\Client;
 use CodeProject\Entities\Project;
+use CodeProject\Entities\ProjectMembers;
+use CodeProject\Entities\ProjectNote;
+use CodeProject\Entities\ProjectTask;
 use CodeProject\Entities\User;
 use Faker\Generator;
 
@@ -54,5 +57,46 @@ $factory->define(Project::class, function (Generator $faker) {
         'progress' => rand(1,100),
         'status' => rand(1,3),
         'due_date' => $faker->dateTime('now'),
+    ];
+});
+
+$factory->define(ProjectNote::class, function (Generator $faker) {
+    $project = Project::all()->lists('id');
+    foreach ($project as $value) {
+        $p[] = $value;
+    }    
+    return [
+        'project_id' => $faker->randomElement($p),
+        'title' => $faker->title,
+        'note' => $faker->paragraph,        
+    ];
+});
+
+$factory->define(ProjectTask::class, function (Generator $faker) {
+    $project = Project::all()->lists('id');
+    foreach ($project as $value) {
+        $p[] = $value;
+    }    
+    return [
+        'project_id' => $faker->randomElement($p),
+        'name' => $faker->word,
+        'start_date' => $faker->dateTime('now'),
+        'due_date' => $faker->dateTime('now'),
+        'status' => rand(1,3),
+    ];
+});
+
+$factory->define(ProjectMembers::class, function (Generator $faker) {
+    $project = Project::all()->lists('id');
+    foreach ($project as $value) {
+        $p[] = $value;
+    }  
+    $user = User::all()->lists('id');
+    foreach ($user as $value) {
+        $u[] = $value;
+    }
+    return [
+        'project_id' => $faker->randomElement($p),        
+        'user_id' => $faker->randomElement($u),        
     ];
 });
