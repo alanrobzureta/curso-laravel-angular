@@ -74,7 +74,7 @@ class ProjectService {
     
     public function show($id) {
         try {            
-            $this->repository->with('user');
+            $this->repository->with('owner');
             $this->repository->with('client');
             return $this->repository->find($id);            
         } catch (ValidatorException $e) {

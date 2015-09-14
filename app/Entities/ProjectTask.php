@@ -9,6 +9,8 @@ use Prettus\Repository\Traits\TransformableTrait;
 class ProjectTask extends Model implements Transformable
 {
     use TransformableTrait;
+    
+    protected $table = 'project_task';
 
     protected $fillable = [
         'project_id',

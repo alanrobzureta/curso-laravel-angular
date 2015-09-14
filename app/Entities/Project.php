@@ -16,7 +16,7 @@ class Project extends Model
         'due_date'
     ];
 
-    public function user()
+    public function owner()
     {
         return $this->belongsTo('CodeProject\Entities\User');
     }
