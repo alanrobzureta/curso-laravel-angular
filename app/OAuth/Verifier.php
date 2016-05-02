@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
  *
  * @author infor11
  */
-class PasswordGrantVerifier {
+class Verifier {
     
     public function verify($username, $password)
     {
