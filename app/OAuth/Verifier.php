@@ -24,14 +24,14 @@ class Verifier {
             'password' => $password,
         ];
 
-        /*if (Auth::once($credentials)) {
+        if (Auth::once($credentials)) {
             return Auth::user()->id;
-        }*/
-        if(Auth::validate($credentials)){
+        }
+        /*if(Auth::validate($credentials)){
             $user = \CodeProject\Entities\User::where('email',$username)->first();
             
             return $user->id;
-        }
+        }*/
 
         return false;
     }

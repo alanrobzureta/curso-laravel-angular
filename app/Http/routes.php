@@ -22,7 +22,8 @@ Route::post('oauth/access_token',function(){
 /*
  * ClientController
  */
-Route::get('client',['middleware'=>'oauth','users'=>'ClientController@index']);
+Route::get('client',['middleware'=>'oauth','uses'=>'ClientController@index']);
+//Route::get('client','ClientController@index');
 Route::post('client','ClientController@store');
 Route::put('client/{id}','ClientController@update');
 Route::get('client/{id}','ClientController@show');
