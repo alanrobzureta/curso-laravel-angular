@@ -25,6 +25,8 @@ return [
     | Please see this link to find available grant types
     | http://git.io/vJLAv
     |
+    | Refresh Token: https://github.com/lucadegasperi/oauth2-server-laravel/blob/master/docs/authorization-server/refresh-token.md
+    | 
     */
 
     'grant_types' => [        
