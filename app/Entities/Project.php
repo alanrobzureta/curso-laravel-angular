@@ -38,4 +38,8 @@ class Project extends Model
     {
         return $this->belongsToMany('CodeProject\Entities\User','project_members');
     }
+    
+    public function files() {
+        return $this->hasMany(ProjectFile::class);
+    }
 }
