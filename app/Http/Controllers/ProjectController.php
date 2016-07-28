@@ -73,7 +73,7 @@ class ProjectController extends Controller
     public function show($id) {
         if($this->checkProjectPermissions($id) == false){
             return ['error'=>'Access Forbidden'];
-        };
+        }
         
         return $this->service->show($id);
     }
@@ -98,7 +98,7 @@ class ProjectController extends Controller
     public function update(Request $request, $id) {
         if($this->checkProjectPermissions($id) == false){
             return ['error'=>'Access Forbidden'];
-        };
+        }
         
         return $this->service->update($request->all(), $id);
     }
@@ -112,7 +112,7 @@ class ProjectController extends Controller
     public function destroy($id) {
         if($this->checkProjectPermissions($id) == false){
             return ['error'=>'Access Forbidden'];
-        };
+        }
         
         $this->service->destroy($id);
     }

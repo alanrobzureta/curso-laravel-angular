@@ -2,13 +2,21 @@
 
 namespace CodeProject\Http\Controllers;
 
+use CodeProject\Repositories\ProjectRepositoryEloquent;
 use CodeProject\Repositories\ProjectTaskRepository;
 use CodeProject\Services\ProjectTaskService;
 use Illuminate\Http\Request;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Symfony\Component\HttpFoundation\Response;
+use function dd;
 
 class ProjectTaskController extends Controller
 {
+
+    /**
+     * @var ProjectRepositoryEloquent
+     */
+    private $acl;
 
     /**
      * @var ProjectTaskService
@@ -25,10 +33,11 @@ class ProjectTaskController extends Controller
      * @param ProjectTaskRepository $repository
      * @param ProjectTaskService $service
      */
-    public function __construct(ProjectTaskRepository $repository, ProjectTaskService $service) {
+    public function __construct(ProjectTaskRepository $repository, ProjectTaskService $service, ProjectRepositoryEloquent $acl) {
         
         $this->repository = $repository;
         $this->service = $service;
+        $this->acl = $acl;
     }
     /**
      * Display a listing of the resource.
@@ -37,6 +46,9 @@ class ProjectTaskController extends Controller
      */
     public function index($id)
     {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         //$this->repository->with('project');
         //return $this->repository->all();
         return $this->repository->findWhere(['project_id'=>$id]);
@@ -71,6 +83,9 @@ class ProjectTaskController extends Controller
      * @return Response
      */
     public function show($id,$taskId) {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         return $this->service->show($id,$taskId);
     }
 
@@ -92,6 +107,9 @@ class ProjectTaskController extends Controller
      * @return Response
      */
     public function update(Request $request, $id, $taskId) {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         dd($request->all());
         return $this->service->update($request->all(), $id, $taskId);
     }
@@ -102,7 +120,27 @@ class ProjectTaskController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($taskId) {
+    public function destroy($id,$taskId) {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         $this->service->destroy($taskId);
+    }
+    
+    private function checkProjectOwner($projectId) {
+        $userId = Authorizer::getResourceOwnerId();  
+        return $this->acl->isOwner($projectId,$userId);
+    }
+    
+    private function checkProjectMember($projectId) {
+        $userId = Authorizer::getResourceOwnerId();       
+        return $this->acl->hasMember($projectId,$userId);
+    }
+    
+    private function checkProjectPermissions($projectId) {        
+        if($this->checkProjectOwner($projectId) or $this->checkProjectMember($projectId)){
+            return true;
+        }
+        return false;
     }
 }

@@ -2,9 +2,11 @@
 
 namespace CodeProject\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 use CodeProject\Entities\ProjectMembers;
+use CodeProject\Presenters\ProjectMemberPresenter;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
+use function app;
 
 /**
  * Class ProjectMembersRepositoryEloquent
@@ -28,5 +30,10 @@ class ProjectMembersRepositoryEloquent extends BaseRepository implements Project
     public function boot()
     {
         $this->pushCriteria( app(RequestCriteria::class) );
+    }
+    
+    public function presenter()
+    {
+        return ProjectMemberPresenter::class;
     }
 }

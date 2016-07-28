@@ -3,11 +3,19 @@
 namespace CodeProject\Http\Controllers;
 
 use CodeProject\Repositories\ProjectNoteRepository;
+use CodeProject\Repositories\ProjectRepositoryEloquent;
 use CodeProject\Services\ProjectNoteService;
 use Illuminate\Http\Request;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProjectNoteController extends Controller
 {
+
+    /**
+     * @var ProjectRepositoryEloquent
+     */
+    private $acl;
 
     /**
      * @var ProjectNoteService
@@ -24,10 +32,11 @@ class ProjectNoteController extends Controller
      * @param ProjectNoteRepository $repository
      * @param ProjectNoteService $service
      */
-    public function __construct(ProjectNoteRepository $repository, ProjectNoteService $service) {
+    public function __construct(ProjectNoteRepository $repository, ProjectNoteService $service, ProjectRepositoryEloquent $acl) {
         
         $this->repository = $repository;
         $this->service = $service;
+        $this->acl = $acl;
     }
     /**
      * Display a listing of the resource.
@@ -36,6 +45,9 @@ class ProjectNoteController extends Controller
      */
     public function index($id)
     {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         //$this->repository->with('project');
         //return $this->repository->all();
         return $this->repository->findWhere(['project_id'=>$id]);
@@ -70,6 +82,9 @@ class ProjectNoteController extends Controller
      * @return Response
      */
     public function show($id,$noteId) {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         return $this->service->show($id,$noteId);
     }
 
@@ -91,6 +106,9 @@ class ProjectNoteController extends Controller
      * @return Response
      */
     public function update(Request $request, $id, $noteId) {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         return $this->service->update($request->all(), $id, $noteId);
     }
 
@@ -101,6 +119,26 @@ class ProjectNoteController extends Controller
      * @return Response
      */
     public function destroy($id,$noteId) {
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>'Access Forbidden'];
+        }
         $this->service->destroy($noteId);
+    }
+    
+    private function checkProjectOwner($projectId) {
+        $userId = Authorizer::getResourceOwnerId();  
+        return $this->acl->isOwner($projectId,$userId);
+    }
+    
+    private function checkProjectMember($projectId) {
+        $userId = Authorizer::getResourceOwnerId();       
+        return $this->acl->hasMember($projectId,$userId);
+    }
+    
+    private function checkProjectPermissions($projectId) {        
+        if($this->checkProjectOwner($projectId) or $this->checkProjectMember($projectId)){
+            return true;
+        }
+        return false;
     }
 }
