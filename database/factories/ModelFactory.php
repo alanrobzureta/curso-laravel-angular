@@ -1,6 +1,7 @@
 <?php
 
 use CodeProject\Entities\Client;
+use CodeProject\Entities\OauthClients;
 use CodeProject\Entities\Project;
 use CodeProject\Entities\ProjectMembers;
 use CodeProject\Entities\ProjectNote;
@@ -98,5 +99,13 @@ $factory->define(ProjectMembers::class, function (Generator $faker) {
     return [
         'project_id' => $faker->randomElement($p),        
         'user_id' => $faker->randomElement($u),        
+    ];
+});
+
+$factory->define(OauthClients::class, function (Generator $faker) {
+    return [
+        'id' => $faker->md5,
+        'secret' => $faker->text(10),
+        'name' => $faker->name
     ];
 });

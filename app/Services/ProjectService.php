@@ -131,4 +131,37 @@ class ProjectService {
         $projectFile = $project->files()->create($data);
         $this->storage->put($projectFile->id.".".$data['extension'], $this->filesystem->get($data['file']));
     }
+    
+    public function destroyFile($projectId,$id) 
+    {  
+        try {  
+            $files = $this->repository->skipPresenter()->find($projectId);
+            $file = $files->files()->find($id);
+            if($file){
+                $name = $file->id.".".$file->extension;            
+                $this->storage->delete($name);     
+                $file->delete();  
+
+                return response()->json([
+                  'success'=>'Arquivo removido com sucesso.'  
+                ]);
+                
+            }
+            
+            return response()->json([
+                'error'=>'Arquivo Inexistente.'
+            ]);
+        } catch (ValidatorException $e) {
+            return response()->json([
+                'error'=>true,
+                'message'=>$e->getMessageBag()
+            ]);
+        } catch(ModelNotFoundException $e) {
+            return response()->json([
+                'error'=>true,  
+                'message1'=>$e->getMessage(),
+                'message2'=>'Projeto ID '.$id.' nao encontrado.'
+            ]);
+        }             
+    }
 }

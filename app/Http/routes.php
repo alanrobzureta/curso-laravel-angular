@@ -60,6 +60,7 @@ Route::group(['middleware'=>'oauth'],function(){
         Route::get('{id}/members/{memberId}','ProjectMembersController@is'); //ProjectMembersController
         
         Route::post('{id}/file','ProjectFileController@store');
+        Route::delete('{id}/file/{fileId}','ProjectFileController@destroy'); //ProjectFilesController
     });
    
 });
